@@ -35,7 +35,7 @@ class WhatsAppController {
       }
       Element.prototype.css = function (styles) {
          for (let name in styles) {
-            this.styles[name] = styles[name];
+            this.style[name] = styles[name];
          }
          return this;
       }
@@ -57,6 +57,7 @@ class WhatsAppController {
       HTMLFormElement.prototype.getForm = function () {
          return new FormData(this);
       }
+      // TODO: gera formulário no formato JSON
       HTMLFormElement.prototype.toJSON = function () {
          let json = {};
          this.getForm().forEach((value, key) => {
@@ -99,17 +100,58 @@ class WhatsAppController {
       this.el.btnSavePanelEditProfile.on('click', e => {
          console.log(this.el.inputNamePanelEditProfile.innerHTML);
       });
+      // NOTE: Quando esse formulário for enviado!
       this.el.formPanelAddContact.on('submit', e => {
          e.preventDefault();
          let formData = new FormData(this.el.formPanelAddContact);
       });
       this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(item => {
          item.on('click', e => {
+            this.el.home.hide();
             this.el.main.css({
                display:'flex'
             });
          });
       });
+      this.el.btnAttach.on('click', e => {
+         e.stopPropagation();
+         this.el.menuAttach.addClass('open');
+         document.addEventListener('click', this.closeMenuAttach.bind(this));
+      });
+      this.el.btnAttachPhoto.on('click', e => {
+         this.el.inputPhoto.click();
+      });
+      this.el.inputPhoto.on('change', e => {
+         console.log(this.el.inputPhoto.files);
+         [...this.el.inputPhoto.files].forEach(file => {
+            console.log(file);
+         });
+      });
+      this.el.btnAttachCamera.on('click', e => {
+         this.el.panelMessagesContainer.hide();
+         this.el.panelCamera.addClass('open');
+         this.el.panelCamera.css({
+            'height':'calc(100% - 120px'
+         });
+      });
+      this.el.btnClosePanelCamera.on('click', e => {
+         this.el.panelCamera.removeClass('open');
+         this.el.panelMessagesContainer.show();
+      });
+      this.el.btnTakePicture.on('click', e => {
+         console.log('Take Picture');
+      });
+      this.el.btnAttachContact.on('click', e => {
+         console.log('contact');
+      });
+      this.el.btnAttachDocument.on('click', e => {
+         console.log('document');
+      });
+   }
+
+   closeMenuAttach(e) {
+      document.removeEventListener('click', this.closeMenuAttach);
+      this.el.menuAttach.removeClass("open");
    }
 
    closeAllLeftPanel() {
