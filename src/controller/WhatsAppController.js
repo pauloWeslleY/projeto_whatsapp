@@ -132,8 +132,9 @@ class WhatsAppController {
 			this.closeAllMainPanel();
 			this.el.panelCamera.addClass("open");
 			this.el.panelCamera.css({
-				height: "calc(100% - 120px",
+				'height':'calc(100% - 120px)'
 			});
+			this._camera = new CameraController(this.el.videoCamera);
 		});
 		this.el.btnClosePanelCamera.on("click", e => {
 			this.closeAllMainPanel();
@@ -223,7 +224,6 @@ class WhatsAppController {
 			});
 		});
 	}
-
    startRecordMicrophoneTime() {
       let start = Date.now();
       this._recordMicrophoneInterval = setInterval(() => {
