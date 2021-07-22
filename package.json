@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/pauloWeslleY/projeto_whatsapp#readme",
   "dependencies": {
-    "firebase": "^4.1.5",
+    "firebase": "^4.13.1",
     "pdfjs-dist": "^2.0.489",
     "webpack": "^3.1.0",
     "webpack-dev-server": "^2.5.1"
