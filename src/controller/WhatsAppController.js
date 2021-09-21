@@ -102,6 +102,10 @@ export class WhatsAppController {
 				</div>
 			</div>
 		`;
+		this._user.on('contactschange', docs => {
+
+		});
+		this._user.getContacts();
 	}
 
 	loadElements() {
