@@ -271,7 +271,6 @@ export class Message extends Model {
                </div>
             `;
 				break;
-
 			default:
 				div.innerHTML = `
                <div class="font-style _3DFk6 tail">
