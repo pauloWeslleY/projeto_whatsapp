@@ -123,6 +123,9 @@ export class WhatsAppController {
 	}
 
 	setActiveChat(contact) {
+		if (this._contactActive) {
+			Message.getRef(this._contactActive.idChat).onSnapshot(() => { });
+		}
 		this._contactActive = contact;
 		this.el.activeName.innerHTML = contact.name;
 		this.el.activeStatus.innerHTML = contact.status;
@@ -134,6 +137,17 @@ export class WhatsAppController {
 		this.el.home.hide();
 		this.el.main.css({
 			display: 'flex'
+		});
+		Message.getRef(this._contactActive.idChat).orderBy('timeStamp').onSnapshot(docs => {
+			this.el.panelMessagesContainer.innerHTML = '';
+			docs.forEach(doc => {
+				let data = doc.data();
+				let message = new Message();
+				message.fromJSON(data);
+				let me = (data.from === this._user.email);
+				let view = message.getViewElement(me);
+				this.el.panelMessagesContainer.appendChild(view);
+			});
 		});
 	}
 
