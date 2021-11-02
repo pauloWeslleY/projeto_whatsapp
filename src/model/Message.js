@@ -138,10 +138,10 @@ export class Message extends Model {
                            <div class="_2jTyA" style="background-image: url()"></div>
                            <div class="_12xX7">
                               <div class="_3eW69">
-                                    <div class="JdzFp message-file-icon icon-doc-pdf"></div>
+                                 <div class="JdzFp message-file-icon icon-doc-pdf"></div>
                               </div>
                               <div class="nxILt">
-                                    <span dir="auto" class="message-filename">Arquivo.pdf</span>
+                                 <span dir="auto" class="message-filename">Arquivo.pdf</span>
                               </div>
                               <div class="_17viz">
                                     <span data-icon="audio-download" class="message-file-download">
