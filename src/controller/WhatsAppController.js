@@ -523,8 +523,16 @@ export class WhatsAppController {
 			this.closeRecordMicrophone();
 		});
 		this.el.btnFinishMicrophone.on('click', e => {
+			this._microphoneController.on('recorded', (file, metadada) => {
+				Message.sendAudio(
+					this._contactActive.chatId,
+					this._user.email,
+					file,
+					metadada,
+					this._user.photo
+				);
+			});
 			this._microphoneController.stopRecorder();
-			// this._microphoneController.stop();
 			this.closeRecordMicrophone();
 		});
 		this.el.inputText.on('keypress', e => {
