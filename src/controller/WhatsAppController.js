@@ -292,6 +292,7 @@ export class WhatsAppController {
 			if (this.el.inputProfilePhoto.files.length > 0) {
 				let file = this.el.inputProfilePhoto.files[0];
 				Upload.send(file, this._user.email).then(snapshot => {
+					console.log(snapshot);
 					snapshot.ref.getDownloadURL().then(downloadURL => {
 						this._user.photo = downloadURL;
 						this._user.save().then(() => {
