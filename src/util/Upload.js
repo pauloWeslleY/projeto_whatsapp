@@ -9,9 +9,10 @@ export class Upload {
          }, err => {
             f(err);
          }, () => {
-            uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-               s(downloadURL);
-            })
+            s(uploadTask.snapshot);
+            // uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            //    s(downloadURL);
+            // });
          });
       });
    }
