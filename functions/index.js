@@ -41,7 +41,6 @@ let encode64 = function(input) {
    return output;
 };
 
-
 let decode64 = function(input) {
    let output = "";
    let chr1; let chr2; let chr3 = "";
@@ -82,7 +81,6 @@ let decode64 = function(input) {
    return unescape(output);
 };
 
-
 exports.saveLastMessage = functions.firestore.document("/chats/{chatId}/messages/{messageId}").onCreate((change, context) => {
    let chatId = context.params.chatId;
    let messageId = context.params.messageId;
@@ -92,6 +90,7 @@ exports.saveLastMessage = functions.firestore.document("/chats/{chatId}/messages
 
    return new Promise((resolve, reject) => {
       let chatRef = db.collection("chats").doc(chatId);
+
       chatRef.onSnapshot((snapChat) => {
          let chatDoc = snapChat.data();
          console.log("[CHAT DATA]", chatDoc);
