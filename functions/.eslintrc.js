@@ -17,5 +17,6 @@ module.exports = {
       "no-tabs": "off",
       "max-len": "off",
       "prefer-const": "off",
+      "no-trailing-spaces": "off",
    },
 };
