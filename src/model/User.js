@@ -51,6 +51,7 @@ export class User extends Model {
 	static getRef() {
 		return Firebase.db().collection('/users');
 	}
+
    static getContactsRef(id) {
       return User.getRef()
          .doc(id)
