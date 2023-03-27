@@ -26,8 +26,7 @@ export class WhatsAppController {
 			.then(response => {
 				this._user = new User(response.user.email);
 				this._user.on('datachange', data => {
-					document.querySelector('title').innerHTML =
-						data.name + ' - WhatsApp Clone';
+					document.querySelector('title').innerHTML = `${data.name} - WhatsApp Clone`;
 					this.el.inputNamePanelEditProfile.innerHTML = data.name;
 					if (data.photo) {
 						let photo = this.el.imgPanelEditProfile;
