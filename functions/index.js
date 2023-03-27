@@ -4,13 +4,19 @@ let admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 let db = admin.firestore();
 
-const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+const keyStr =
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 let encode64 = function(input) {
    input = escape(input);
    let output = "";
-   let chr1; let chr2; let chr3 = "";
-   let enc1; let enc2; let enc3; let enc4 = "";
+   let chr1;
+   let chr2;
+   let chr3 = "";
+   let enc1;
+   let enc2;
+   let enc3;
+   let enc4 = "";
    let i = 0;
 
    do {
@@ -29,7 +35,8 @@ let encode64 = function(input) {
          enc4 = 64;
       }
 
-      output = output +
+      output =
+			output +
 			keyStr.charAt(enc1) +
 			keyStr.charAt(enc2) +
 			keyStr.charAt(enc3) +
@@ -43,15 +50,22 @@ let encode64 = function(input) {
 
 let decode64 = function(input) {
    let output = "";
-   let chr1; let chr2; let chr3 = "";
-   let enc1; let enc2; let enc3; let enc4 = "";
+   let chr1;
+   let chr2;
+   let chr3 = "";
+   let enc1;
+   let enc2;
+   let enc3;
+   let enc4 = "";
    let i = 0;
 
    let base64test = /[^A-Za-z0-9=]/g;
    if (base64test.exec(input)) {
-      console.error("There were invalid base64 characters in the input text.\n" +
-			"Valid base64 characters are A-Z, a-z, 0-9, '', '/',and '='\n" +
-			"Expect errors in decoding.");
+      console.error(
+         "There were invalid base64 characters in the input text.\n" +
+				"Valid base64 characters are A-Z, a-z, 0-9, '', '/',and '='\n" +
+				"Expect errors in decoding."
+      );
    }
    input = input.replace(/[^A-Za-z0-9=]/g, "");
 
@@ -81,45 +95,64 @@ let decode64 = function(input) {
    return unescape(output);
 };
 
-exports.saveLastMessage = functions.firestore.document("/chats/{chatId}/messages/{messageId}").onCreate((change, context) => {
-   let chatId = context.params.chatId;
-   let messageId = context.params.messageId;
+exports.saveLastMessage = functions.firestore
+   .document("/chats/{chatId}/messages/{messageId}")
+   .onCreate((change, context) => {
+      let chatId = context.params.chatId;
+      let messageId = context.params.messageId;
 
-   console.log("[CHAT ID]", chatId);
-   console.log("[MESSAGE ID]", messageId);
+      console.log("[CHAT ID]", chatId);
+      console.log("[MESSAGE ID]", messageId);
 
-   return new Promise((resolve, reject) => {
-      let chatRef = db.collection("chats").doc(chatId);
+      return new Promise((resolve, reject) => {
+         let chatRef = db.collection("chats").doc(chatId);
 
-      chatRef.onSnapshot((snapChat) => {
-         let chatDoc = snapChat.data();
-         console.log("[CHAT DATA]", chatDoc);
+         chatRef.onSnapshot((snapChat) => {
+            let chatDoc = snapChat.data();
+            console.log("[CHAT DATA]", chatDoc);
 
-         let messageRef = chatRef.collection("messages").doc(messageId).onSnapshot((snapMessage) => {
-            let messageDoc = snapMessage.data();
-            console.log("[MESSAGE DATA]", messageDoc);
+            let messageRef = chatRef
+               .collection("messages")
+               .doc(messageId)
+               .onSnapshot((snapMessage) => {
+                  // [] Variável que armazena os dados
+                  let messageDoc = snapMessage.data();
+                  console.log("[MESSAGE DATA]", messageDoc);
 
-            let userFrom = messageDoc.from;
-            let userTo = Object.keys(chatDoc.users).filter((key) => {
-               return (key !== encode64(userFrom));
-            })[0];
-            console.log("[FROM]", userFrom);
-            console.log("[TO]", userTo);
+                  let userFrom = messageDoc.from;
+                  let userTo = Object.keys(chatDoc.users).filter((key) => {
+                     return key !== encode64(userFrom);
+                  })[0];
 
-            db.collection("users").doc(decode64(userTo)).collection("contacts").doc(encode64(userFrom)).set({
-               lastMessage: messageDoc.content,
-               lastMessageTime: new Date(),
-            }, {
-               merge: true,
-            }).then((e) => {
-               console.log("[FINISH]", new Date());
-               resolve(e);
-               return true;
-            }).catch((err) => {
-               console.log("[ERR]", err);
-               throw new Error(err);
-            });
+                  console.log("[FROM]", userFrom);
+                  console.log("[TO]", userTo);
+
+                  let users = db.collection("users");
+                  console.log("I'm Here ==> ==> ==>", users);
+
+                  db.collection("users")
+                     .doc(decode64(userTo))
+                     .collection("contacts")
+                     .doc(encode64(userFrom))
+                     .set(
+                        {
+                           lastMessage: messageDoc.content,
+                           lastMessageTime: new Date(),
+                        },
+                        {
+                           merge: true,
+                        }
+                     )
+                     .then((event) => {
+                        console.log("[FINISH]", new Date());
+                        resolve(event);
+                        return true;
+                     })
+                     .catch((err) => {
+                        console.log("[ERR]", err);
+                        throw new Error(err);
+                     });
+               });
          });
       });
    });
-});

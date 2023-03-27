@@ -419,8 +419,8 @@ export class Message extends Model {
             //       from,
             //       'image',
             //       downloadURL
-            //       //'',
-            //       //uploadTask.snapshot.downloadURL
+            //       '',
+            //       uploadTask.snapshot.downloadURL
             //    ).then(() => {
             //       s();
             //    });
