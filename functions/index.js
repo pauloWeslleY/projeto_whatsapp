@@ -4,19 +4,13 @@ let admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 let db = admin.firestore();
 
-const keyStr =
-	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 let encode64 = function(input) {
    input = escape(input);
    let output = "";
-   let chr1;
-   let chr2;
-   let chr3 = "";
-   let enc1;
-   let enc2;
-   let enc3;
-   let enc4 = "";
+   let chr1; let chr2; let chr3 = "";
+   let enc1; let enc2; let enc3; let enc4 = "";
    let i = 0;
 
    do {
@@ -35,12 +29,11 @@ let encode64 = function(input) {
          enc4 = 64;
       }
 
-      output =
-			output +
-			keyStr.charAt(enc1) +
-			keyStr.charAt(enc2) +
-			keyStr.charAt(enc3) +
-			keyStr.charAt(enc4);
+      output = output +
+            keyStr.charAt(enc1) +
+            keyStr.charAt(enc2) +
+            keyStr.charAt(enc3) +
+            keyStr.charAt(enc4);
       chr1 = chr2 = chr3 = "";
       enc1 = enc2 = enc3 = enc4 = "";
    } while (i < input.length);
@@ -50,22 +43,15 @@ let encode64 = function(input) {
 
 let decode64 = function(input) {
    let output = "";
-   let chr1;
-   let chr2;
-   let chr3 = "";
-   let enc1;
-   let enc2;
-   let enc3;
-   let enc4 = "";
+   let chr1; let chr2; let chr3 = "";
+   let enc1; let enc2; let enc3; let enc4 = "";
    let i = 0;
 
    let base64test = /[^A-Za-z0-9=]/g;
    if (base64test.exec(input)) {
-      console.error(
-         "There were invalid base64 characters in the input text.\n" +
-				"Valid base64 characters are A-Z, a-z, 0-9, '', '/',and '='\n" +
-				"Expect errors in decoding."
-      );
+      console.error("There were invalid base64 characters in the input text.\n" +
+            "Valid base64 characters are A-Z, a-z, 0-9, '', '/',and '='\n" +
+            "Expect errors in decoding.");
    }
    input = input.replace(/[^A-Za-z0-9=]/g, "");
 
@@ -105,20 +91,28 @@ exports.saveLastMessage = functions.firestore
       console.log("[MESSAGE ID]", messageId);
 
       return new Promise((resolve, reject) => {
+         // ! Referencia do chat
          let chatRef = db.collection("chats").doc(chatId);
 
          chatRef.onSnapshot((snapChat) => {
+            // ! o snapChat vai carrega todos os docs dentro desse chat
+
             let chatDoc = snapChat.data();
             console.log("[CHAT DATA]", chatDoc);
 
+            // ! carregando as mensagens
             let messageRef = chatRef
                .collection("messages")
                .doc(messageId)
                .onSnapshot((snapMessage) => {
-                  // [] Variável que armazena os dados
+                  // ! Variável que armazena os dados
                   let messageDoc = snapMessage.data();
                   console.log("[MESSAGE DATA]", messageDoc);
 
+                  /*
+							fixme = variável que armazena o email de quem enviou as mensagens
+							fixme = variável que armazena o email de quem recebe as mensagens
+						*/
                   let userFrom = messageDoc.from;
                   let userTo = Object.keys(chatDoc.users).filter((key) => {
                      return key !== encode64(userFrom);
@@ -127,22 +121,18 @@ exports.saveLastMessage = functions.firestore
                   console.log("[FROM]", userFrom);
                   console.log("[TO]", userTo);
 
-                  let users = db.collection("users");
-                  console.log("I'm Here ==> ==> ==>", users);
-
                   db.collection("users")
                      .doc(decode64(userTo))
                      .collection("contacts")
                      .doc(encode64(userFrom))
-                     .set(
-                        {
-                           lastMessage: messageDoc.content,
-                           lastMessageTime: new Date(),
-                        },
-                        {
-                           merge: true,
-                        }
-                     )
+                     .set({
+                        // ! dados da ultima mensagem enviada!
+                        lastMessage: messageDoc.content,
+                        lastMessageTime: new Date(),
+                     },
+                     {
+                        merge: true,
+                     })
                      .then((event) => {
                         console.log("[FINISH]", new Date());
                         resolve(event);

@@ -22,9 +22,9 @@
 	"dependencies": {
 		"@firebase/firestore": "^2.4.0",
 		"firebase": "^7.15.5",
+		"firebase-functions": "^4.2.1",
 		"pdfjs-dist": "^2.0.489",
 		"webpack": "^3.1.0",
 		"webpack-dev-server": "^2.5.1"
 	}
 }
-
