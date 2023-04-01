@@ -10,10 +10,6 @@ export class MicrophoneController extends ClassEvent {
       }).then(stream => {
          this._available = true;
          this._stream = stream;
-         // let mediaStream = new MediaStream(stream);
-         // let audio = new Audio();
-         // audio.srcObject = mediaStream;
-         // audio.play();
          this.trigger('ready', this._stream);
       }).catch(err => {
          console.error(err);
@@ -56,16 +52,6 @@ export class MicrophoneController extends ClassEvent {
                });
             }
             reader.readAsArrayBuffer(blob);
-
-
-            // console.log('file', file);
-            // let reader = new FileReader();
-            // reader.onload = e => {
-            //    console.log('reader file', file);
-            //    let audio = new Audio(reader.result);
-            //    audio.play();
-            // }
-            // reader.readAsDataURL(file);
 
          });
          this._mediaRecorder.start();
